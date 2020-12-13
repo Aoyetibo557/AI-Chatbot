@@ -1,75 +1,132 @@
-jQuery(document).ready(function(){
+var INDEX = 0;
+var aiName;
+jQuery(document).ready(function() {
 
-    //Variables
+    //Local Variables
     var name;
-
-
-   setDate();
-   
-
-    $("._ai_icons_img").on('click',function(){
+    setDate();
+    $("._ai_icons_img").on('click', function() {
         removeDissapear();
     })
-    
-    $("._sub").on("click", function(){
-        name = document.getElementById("firstName").value;
 
-        if(document.getElementById("firstName").value.length == 0){
+    $("._sub").on("click", function() {
+        var name = $("#firstName").val();
+
+        if (name == '') {
             alert("Name is required");
-        }
-        else{
-            timmyAi("Hi i'm Timmy");
-            timmyAi("How are you Today " + name);
+            return false;
+        } else {
+            introMessage(name, aiName);
+            generate_manual_message("How Old are you?", 'user');
         }
         document.getElementById("firstName").value = '';
+
+        $("._user_name").hide();
     })
 
 
-    $("#send").on("click",function(){
-        getInput();
+    $("#chat-submit").click(function(e) {
+        e.preventDefault();
+        var incMsg = $("#chat-input").val().toLowerCase();
+        if (incMsg.trim() == '') {
+            return false;
+        }
+        generate_message(incMsg, 'self');
 
-        var doc = document.getElementById("inputMsg").value.toLowerCase();
-       
-        if(doc == "hello"){ timmyAi("Hello to you too");}
-        else if(doc == "how are you today"){
-            timmyAi("I'm doing just fine");
-        }
-        else{
-            timmyAi("I didn;t quite get that");
-        }
-        
-        document.getElementById("inputMsg").value = '';
+        setTimeout(function() {
+            generate_message(incMsg, 'user');
+
+            init_convo(doc);
+        }, 1000)
+
+
+        document.getElementById("chat-input").value = '';
     })
+
+    // $(".chat-box-toggle").click(function() {
+    //     $("#chat-circle").toggle('scale');
+    //     $(".chat-box").toggle('scale');
+    // })
+
+
+
+
+    //functions inside jquery parenthesis
+    function generate_message(msg, type) {
+        INDEX++;
+        var newStr = "";
+        newStr += "<div id='cm-msg-" + INDEX + "' class=\"chat-msg " + type + "\">";
+        newStr += " <div class=\"cm-msg-text\">";
+        newStr += msg;
+        newStr += "  </div>";
+        newStr += "</div>";
+
+        $(".chat-logs").append(newStr);
+        $("#cm-msg-" + INDEX).hide().fadeIn(300);
+        if (type == 'self') {
+            $("#chat-input").val('')
+        }
+        $(".chat-logs").stop().animate({ scrollTop: $(".chat-logs")[0].scrollHeight }, 1000);
+    }
+
+    function generate_manual_message(msg, type) {
+        INDEX++;
+        var newStr = "";
+        newStr += "<div id='cm-msg-" + INDEX + "' class=\"chat-msg " + type + "\">";
+        newStr += " <div class=\"cm-msg-text\">";
+        newStr += msg;
+        newStr += "  </div>";
+        newStr += "</div>";
+
+        $(".chat-logs").append(newStr);
+        $("#cm-msg-" + INDEX).hide().fadeIn(300);
+        if (type == 'self') {
+            $("#chat-input").val('')
+        }
+        $(".chat-logs").stop().animate({ scrollTop: $(".chat-logs")[0].scrollHeight }, 1000);
+    }
+
 
 })
 
-function selectedAi(newAi){
+
+function selectedAi(newAi) {
+
     document.querySelector('._icon').src = newAi;
     document.querySelector('._icon_pic').src = newAi;
 
+    if (newAi == './images/ai1.png') {
+        aiName = "Timmy";
+    }
+    if (newAi == './images/ai2.png') {
+        aiName = "Shahad";
+    }
+
+    if (newAi == './images/ai3.png') {
+        aiName = "Tiana";
+    }
 }
-function removeDissapear(){
+
+function resetAI() {
+    selectedAi(newAi);
+}
+
+function removeDissapear() {
     var doc = document.getElementById("selected");
     doc.classList.remove("_dissapear");
 
-    var chatContent = document.getElementById("mainChatBox");
+    var chatContent = document.getElementById("_chatBox");
     chatContent.classList.remove("_dissapear");
 }
-function getInput(){
-    var doc = document.getElementById("inputMsg").value;
-    var newMsg = document.createElement("LI");
-    var node = document.createTextNode(doc);
-    newMsg.setAttribute("class", "_msg_p");
-    newMsg.appendChild(node);
-    var element = document.getElementById("msg_ul");
 
-    element.appendChild(newMsg);
 
-    // return doc;
+function getInput() {
+    var doc = document.getElementById("chat-input").value;
+    return doc;
 }
 
 
-function setDate(){
+function setDate() {
     var d = new Date();
     var numDate = d.getDate();
     var yr = d.getFullYear();
@@ -101,18 +158,24 @@ function setDate(){
     var day = days[d.getDay()];
 
     // document.getElementById("theTime").innerHTML = d;
-    document.getElementById("theTime").innerHTML = day+", "+month+" "+numDate+", "+yr;
+    document.getElementById("theTime").innerHTML = day + ", " + month + " " + numDate + ", " + yr;
 }
 
+function introMessage(userName, ai) {
+    INDEX++;
+    var type = 'user';
+    var newStr = "";
+    newStr += "<div id='cm-msg-" + INDEX + "' class=\"chat-msg " + type + "\">";
+    newStr += " <div class=\"cm-msg-text\">";
+    newStr += "<p> Hello " + userName + " welcome to this mini AI chatroom. ";
+    newStr += "My name is " + ai + ", I am a mini ai created by O.A.G Studios .Enjoy your time here. </p>"
+    newStr += "  </div>";
+    newStr += "</div>";
 
-function timmyAi(speak){
-    speak;
-
-    var newAiMsg = document.createElement("LI");
-    var node = document.createTextNode(speak);
-    newAiMsg.setAttribute("class", "_ai_msg_p");
-    newAiMsg.appendChild(node);
-    var element = document.getElementById("msg_ul");
-    element.appendChild(newAiMsg);
-    
+    $(".chat-logs").append(newStr);
+    $("#cm-msg-" + INDEX).hide().fadeIn(300);
+    if (type == 'self') {
+        $("#chat-input").val('')
+    }
+    $(".chat-logs").stop().animate({ scrollTop: $(".chat-logs")[0].scrollHeight }, 1000);
 }
