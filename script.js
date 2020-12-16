@@ -51,7 +51,12 @@ jQuery(document).ready(function() {
 
 
 
-    //functions inside jquery parenthesis
+    /**
+     * This function allows the ai to create messages based on the input from the user.
+     * It registers the user input and out puts in back again to the screen.
+     * @param {*} msg Incoming message
+     * @param {*} type type of message to be created 'self' or 'user'
+     */
     function generate_message(msg, type) {
         INDEX++;
         var newStr = "";
@@ -69,6 +74,12 @@ jQuery(document).ready(function() {
         $(".chat-logs").stop().animate({ scrollTop: $(".chat-logs")[0].scrollHeight }, 1000);
     }
 
+
+    /**
+     * This function creates a new message based on the input and type passed toit
+     * @param {*} msg incoming message 
+     * @param {*} type type of message 'user' or 'self'
+     */
     function generate_manual_message(msg, type) {
         INDEX++;
         var newStr = "";
@@ -89,7 +100,12 @@ jQuery(document).ready(function() {
 
 })
 
-
+/**
+ * It handles the functionality for the selected ai and where to display this
+ * particular information to the user.
+ * @mod2 hope to refresh the chat box each time a new ai is selected.
+ * @param {*} newAi SELECTED ai
+ */
 function selectedAi(newAi) {
 
     document.querySelector('._icon').src = newAi;
@@ -125,7 +141,10 @@ function getInput() {
     return doc;
 }
 
-
+/**
+ * Outputs the current date for the user.
+ * mainly for design purpose
+ */
 function setDate() {
     var d = new Date();
     var numDate = d.getDate();
@@ -161,6 +180,14 @@ function setDate() {
     document.getElementById("theTime").innerHTML = day + ", " + month + " " + numDate + ", " + yr;
 }
 
+/**
+ * This function creates an intro message after the user's name has been inputed.
+ * One flaw is it creates the message even without a name. 
+ * @mod2 need to create an event to prevent users creating a new intro message before 
+ * adding their names.
+ * @param {*} userName gets the active users name and adds it to the intro message for the user
+ * @param {*} ai registers the selected ai 
+ */
 function introMessage(userName, ai) {
     INDEX++;
     var type = 'user';
